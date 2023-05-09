@@ -1,28 +1,12 @@
-const { createServer } = require('http');
-const { readFileSync } = require('fs');
+const express = require('express');
+const app = express();
+const port = 5000;
 
-const homePage = readFileSync('./nice-app/index.html', 'utf8');
-const homeStyle = readFileSync('./nice-app/style.css', 'utf8');
-const homeLogic = readFileSync('./nice-app/script.js', 'utf8');
+app.get('/', (req, res) => res.send('Home Page!'));
+app.get('/about', (req, res) => res.send('About World!'));
+app.get('/contact', (req, res) => res.send('Contact World!'));
+app.all('*', (req, res) =>
+  res.status(404).send('<h1>Resource not found</h1>`')
+);
 
-const server = createServer((req, res) => {
-  if (req.url === '/') {
-    res.writeHead(200, { 'content-type': 'text/html' });
-    res.write(homePage);
-    res.end();
-  } else if (req.url === '/style.css') {
-    res.writeHead(200, { 'content-type': 'text/css' });
-    res.write(homeStyle);
-    res.end();
-  } else if (req.url === '/script.js') {
-    res.writeHead(200, { 'content-type': 'text/javascript' });
-    res.write(homeLogic);
-    res.end();
-  } else {
-    res.writeHead(404, 'Not found', { 'content-type': 'text/plain' });
-    res.write('Not Found');
-    res.end();
-  }
-});
-
-server.listen(5000);
+app.listen(port, () => console.log(`server is listening on port ${port}!`));
