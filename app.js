@@ -51,6 +51,26 @@ app.post("/api/products", (req, res) => {
   res.json({ success: true, product: newProduct });
 });
 
+app.put("/api/products/:id", (req, res) => {
+  const { product: newProduct } = req.body;
+  const { id } = req.params;
+
+  if (!newProduct) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "No Products Provided" });
+  }
+
+  const updatedProducts = products.map((p) => {
+    if (p.id === Number(id)) {
+      return newProduct;
+    }
+    return p;
+  });
+
+  res.json({ success: true, products: updatedProducts });
+});
+
 app.get("/api/user", (req, res) => {
   res.json(req.user);
 });
