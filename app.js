@@ -33,9 +33,22 @@ app.post("/api/people", (req, res) => {
   const { name } = req.body;
 
   if (name) {
-    res.status(201).json({ success: true, person: name });
+    return res.status(201).json({ success: true, person: name });
   }
   res.status(400).json({ success: false, msg: "Noo Name" });
+});
+
+app.post("/api/products", (req, res) => {
+  const { product } = req.body;
+
+  if (!product) {
+    return res.status(400).json("No product sent");
+  }
+
+  const newProduct = { ...product, id: products.length + 1 };
+  products.push(newProduct);
+
+  res.json({ success: true, product: newProduct });
 });
 
 app.get("/api/user", (req, res) => {
