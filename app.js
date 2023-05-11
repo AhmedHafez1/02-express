@@ -1,14 +1,20 @@
 const { products, people } = require('./data');
 const express = require('express');
 const app = express();
+const logger = require('./logger');
 
-const logger = (req, res, next) => {
-  console.log(req.url, req.method, new Date().toLocaleString());
-  next();
-};
+app.use('/api', logger);
 
-app.get('/', logger, (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send('Welcome');
+});
+
+app.get('/api/products', (req, res) => {
+  res.json(products);
+});
+
+app.get('/api/orders', (req, res) => {
+  res.send('Orders');
 });
 
 app.listen(5000);
