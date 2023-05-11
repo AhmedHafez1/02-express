@@ -71,6 +71,20 @@ app.put("/api/products/:id", (req, res) => {
   res.json({ success: true, products: updatedProducts });
 });
 
+app.delete("/api/products/:id", (req, res) => {
+  const { id } = req.params;
+  const product = products.find((p) => p.id === Number(id));
+
+  if (!product) {
+    return res
+      .status(400)
+      .json({ success: false, msg: "No Product with id : " + id });
+  }
+
+  const filteredProducts = products.filter((p) => p.id !== Number(id));
+  res.json({ success: true, products: filteredProducts });
+});
+
 app.get("/api/user", (req, res) => {
   res.json(req.user);
 });
