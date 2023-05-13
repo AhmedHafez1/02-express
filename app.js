@@ -1,10 +1,10 @@
-const { products } = require('./data');
 const express = require('express');
 const app = express();
 const logger = require('./logger');
 const auth = require('./auth');
 const morgan = require('morgan');
 const people = require('./routes/people');
+const products = require('./routes/products');
 
 app.use('/api', logger);
 app.use(morgan('tiny'));
@@ -12,10 +12,7 @@ app.use(express.static('./methods-public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/api/people', people);
-
-app.get('/api/products', (req, res) => {
-  res.status(200).json(products);
-});
+app.use('/api/products', products);
 
 app.post('/login', (req, res) => {
   const { name } = req?.body;
@@ -24,53 +21,6 @@ app.post('/login', (req, res) => {
   } else {
     res.status(401).send('Unauthorized');
   }
-});
-
-app.post('/api/products', (req, res) => {
-  const { product } = req.body;
-
-  if (!product) {
-    return res.status(400).json('No product sent');
-  }
-
-  const newProduct = { ...product, id: products.length + 1 };
-  products.push(newProduct);
-
-  res.json({ success: true, product: newProduct });
-});
-
-app.put('/api/products/:id', (req, res) => {
-  const { product: newProduct } = req.body;
-  const { id } = req.params;
-
-  if (!newProduct) {
-    return res
-      .status(400)
-      .json({ success: false, msg: 'No Products Provided' });
-  }
-
-  const updatedProducts = products.map((p) => {
-    if (p.id === Number(id)) {
-      return newProduct;
-    }
-    return p;
-  });
-
-  res.json({ success: true, products: updatedProducts });
-});
-
-app.delete('/api/products/:id', (req, res) => {
-  const { id } = req.params;
-  const product = products.find((p) => p.id === Number(id));
-
-  if (!product) {
-    return res
-      .status(400)
-      .json({ success: false, msg: 'No Product with id : ' + id });
-  }
-
-  const filteredProducts = products.filter((p) => p.id !== Number(id));
-  res.json({ success: true, products: filteredProducts });
 });
 
 app.get('/api/user', (req, res) => {

@@ -1,4 +1,5 @@
 const express = require('express');
+const { people } = require('../data');
 const router = express.Router();
 
 router.get('/', (req, res) => {
